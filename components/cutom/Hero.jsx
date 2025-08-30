@@ -30,7 +30,7 @@ function Hero() {
       prompt: [prompt],
       user: authUser?._id,
     });
-    console.log(workspaceId);
+    setUserInput("");
     router.push(`/workspace/${workspaceId}`);
   };
 

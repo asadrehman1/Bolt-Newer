@@ -24,3 +24,19 @@ export const getWorkspace = query({
     return workspace;
   },
 });
+
+export const updateWorkspace = mutation({
+  args: {
+    id: v.id("workspaces"),
+    prompt: v.any(),
+  },
+  handler: async (ctx, args) => {
+    const workspace = await ctx.db.get(args.id);
+    if (!workspace) {
+      throw new Error("Workspace not found");
+    }
+    return ctx.db.patch(args.id, {
+      prompt: args.prompt,
+    });
+  },
+});

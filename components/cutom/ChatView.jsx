@@ -6,19 +6,20 @@ import Colors from "@/data/Colors";
 import Lookup from "@/data/Lookup";
 import Prompt from "@/data/Prompt";
 import axios from "axios";
-import { useConvex } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { ArrowRight, Link, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 
-
 function ChatView() {
   const { id } = useParams();
   const convex = useConvex();
   const { prompt, setPrompt } = usePrompt();
   const { authUser } = useAuth();
+  const updateWorkspace = useMutation(api.workspaces.updateWorkspace);
+
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,15 +36,18 @@ function ChatView() {
     const response = await axios.post("/api/ai-chat", {
       prompt: PROMPT,
     });
-    setPrompt((prev) => [
-      ...prev,
-      { role: "ai", content: response.data.result },
-    ]);
+    const aiResponse = { role: "ai", content: response.data.result };
+    setPrompt((prev) => [...prev, aiResponse]);
+    await updateWorkspace({
+      prompt: [...prompt, aiResponse],
+      id,
+    });
     setLoading(false);
   };
 
   const onGenerate = async (userInput) => {
-    setPrompt(prev => [...prev, { role: "user", content: userInput }]);
+    setPrompt((prev) => [...prev, { role: "user", content: userInput }]);
+    setUserInput("");
   };
 
   useEffect(() => {
