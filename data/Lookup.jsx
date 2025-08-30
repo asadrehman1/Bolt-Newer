@@ -10,7 +10,7 @@ export default {
   ],
   HERO_HEADING: "What do you want to build?",
   HERO_DESC: "Prompt, run, edit, and deploy full-stack web apps.",
-  INPUT_PLACEHOLDER: "What you want to build?",
+  INPUT_PLACEHOLDER: "How can Bolt Newer help you today?",
   SIGNIN_HEADING: "Continue With Bolt.Newer",
   SIGNIN_SUBHEADING:
     "To use Bolt you must log into an existing account or create one.",
