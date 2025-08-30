@@ -6,25 +6,34 @@ import Colors from "@/data/Colors";
 import { usePrompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 import SignInDialog from "./SignInDialog";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import { useRouter } from "next/navigation";
 
 function Hero() {
   const { setPrompt } = usePrompt();
   const { authUser } = useAuth();
+  const createWorkspace = useMutation(api.workspaces.createWorkspace);
+  const router = useRouter();
 
   const [userInput, setUserInput] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
 
-  const onGenerate = (userInput) => {
+  const onGenerate = async (userInput) => {
     if (!authUser?.name) {
       setOpenDialog(true);
       return;
     }
-    setPrompt({
+    const prompt = {
       role: "user",
       content: userInput,
+    };
+    const workspaceId = await createWorkspace({
+      prompt: [prompt],
+      user: authUser?._id,
     });
-    setUserInput("");
-    setPrompt("");
+    console.log(workspaceId);
+    router.push(`/workspace/${workspaceId}`);
   };
 
   return (

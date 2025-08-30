@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from "react";
 const PromptContext = createContext();
 
 const PromptContextProvider = ({ children }) => {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState([]);
   return (
     <PromptContext.Provider value={{ prompt, setPrompt }}>
       {children}
