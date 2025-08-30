@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Lookup from "@/data/Lookup";
 import { ArrowRight, Link } from "lucide-react";
 import Colors from "@/data/Colors";
-import { usePrompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 import SignInDialog from "./SignInDialog";
 import { api } from "@/convex/_generated/api";
@@ -11,7 +10,6 @@ import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 
 function Hero() {
-  const { setPrompt } = usePrompt();
   const { authUser } = useAuth();
   const createWorkspace = useMutation(api.workspaces.createWorkspace);
   const router = useRouter();

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "tailwind-scrollbar-hide/v4";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,4 +120,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.reset-tw,
+.reset-tw * {
+  all: revert !important;
 }
