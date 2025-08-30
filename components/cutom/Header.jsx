@@ -8,8 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 function Header() {
   const { authUser } = useAuth();
   return (
-    <div className="pr-8 flex justify-between items-center">
-      <Image src={"/logo.png"} width={200} height={200} alt="Bolt Logo" />
+    <div className="px-8 flex justify-between items-center">
+      <Image src={"/logo.avif"} width={100} height={100} alt="Bolt Logo" />
       {!authUser?.name ? (
         <div className="flex gap-3">
           <Button variant="ghost" className="cursor-pointer">
