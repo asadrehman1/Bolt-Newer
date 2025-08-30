@@ -3,12 +3,27 @@ import React, { useState } from "react";
 import Lookup from "@/data/Lookup";
 import { ArrowRight, Link } from "lucide-react";
 import Colors from "@/data/Colors";
+import { usePrompt } from "@/context/PromptContext";
+import { useAuth } from "@/context/AuthContext";
+import SignInDialog from "./SignInDialog";
 
 function Hero() {
-  const [userInput, setUserInput] = useState("");
+  const { setPrompt } = usePrompt();
+  const { authUser } = useAuth();
 
-  const onGenerate = () => {
-    console.log("generate");
+  const [userInput, setUserInput] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const onGenerate = (userInput) => {
+    if (!authUser?.name) {
+      setOpenDialog(true);
+      return;
+    }
+    setPrompt({
+      role: "user",
+      content: userInput,
+    });
+    setUserInput({});
   };
 
   return (
@@ -16,10 +31,12 @@ function Hero() {
       <h2 className="font-bold text-4xl">{Lookup.HERO_HEADING}</h2>
       <p className="text-gray-400 font-medium">{Lookup.HERO_DESC}</p>
 
-      <div className="p-5 border rounded-xl max-w-xl w-full mt-3"
-      style={{
-        backgroundColor: Colors.BACKGROUND,
-      }}>
+      <div
+        className="p-5 border rounded-xl max-w-xl w-full mt-3"
+        style={{
+          backgroundColor: Colors.BACKGROUND,
+        }}
+      >
         <div className="flex gap-2">
           <textarea
             value={userInput}
@@ -28,7 +45,10 @@ function Hero() {
             className="outline-none bg-transparent w-full h-32 max-h-56 resize-none"
           />
           {userInput && (
-            <ArrowRight className="bg-blue-500 p-2 h-8 w-8 rounded-md cursor-pointer" />
+            <ArrowRight
+              onClick={() => onGenerate(userInput)}
+              className="bg-blue-500 p-2 h-8 w-8 rounded-md cursor-pointer"
+            />
           )}
         </div>
         <div>
@@ -39,6 +59,7 @@ function Hero() {
         {" "}
         {Lookup.SUGGSTIONS.map((suggestion, index) => (
           <h2
+            onClick={() => onGenerate(suggestion)}
             key={index}
             className="p-1 px-2 border rounded-full text-sm text-gray-400 hover:text-white cursor-pointer"
           >
@@ -46,6 +67,7 @@ function Hero() {
           </h2>
         ))}{" "}
       </div>
+      <SignInDialog open={openDialog} onClose={() => setOpenDialog(false)} />
     </div>
   );
 }

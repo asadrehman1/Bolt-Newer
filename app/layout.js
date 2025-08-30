@@ -1,5 +1,7 @@
 import Header from "@/components/cutom/Header";
 import "./globals.css";
+import { PromptContextProvider } from "@/context/PromptContext";
+import { AuthContextProvider } from "@/context/AuthContext";
 
 export const metadata = {
   title: "Bolt Newer",
@@ -11,8 +13,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body>
-        <Header />
-        {children}
+        <AuthContextProvider>
+          <PromptContextProvider>
+            <Header />
+            {children}
+          </PromptContextProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );
