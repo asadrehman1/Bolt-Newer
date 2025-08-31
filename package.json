@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^2.20.0",
     "@google/genai": "^1.16.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",

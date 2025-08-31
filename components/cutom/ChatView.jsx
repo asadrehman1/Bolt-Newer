@@ -54,7 +54,7 @@ function ChatView() {
     if (prompt.length > 0) {
       const role = prompt[prompt.length - 1].role;
       if (role === "user") {
-        // getAIResponse();
+        getAIResponse();
       }
     }
   }, [prompt]);
