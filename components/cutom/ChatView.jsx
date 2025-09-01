@@ -20,7 +20,6 @@ export const countTokens = (inputText) => {
     .split(/\s+/)
     .filter((word) => word).length;
 };
-
 function ChatView() {
   const { id } = useParams();
   const convex = useConvex();

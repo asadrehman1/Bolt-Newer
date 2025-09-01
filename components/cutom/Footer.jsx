@@ -1,8 +1,11 @@
+"use client";
 import { LogOut, Settings, Wallet } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 function Footer() {
+  const router = useRouter();
   const options = [
     {
       name: "Settings",
@@ -11,16 +14,25 @@ function Footer() {
     {
       name: "My Subscription",
       icon: Wallet,
+      path: "/pricing",
     },
     {
       name: "Sign Out",
       icon: LogOut,
     },
   ];
+  const onOptionClick = (option) => {
+    router.push(option.path);
+  };
   return (
     <div className="px-2 mb-10">
       {options.map((option, index) => (
-        <Button variant="ghost" key={index} className="w-full flex justify-start cursor-pointer my-3">
+        <Button
+          onClick={() => onOptionClick(option)}
+          variant="ghost"
+          key={index}
+          className="w-full flex justify-start cursor-pointer my-3"
+        >
           <option.icon />
           <p>{option.name}</p>
         </Button>
