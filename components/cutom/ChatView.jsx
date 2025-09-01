@@ -12,19 +12,33 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
 import Markdown from "react-markdown";
+import { useSidebar } from "../ui/sidebar";
+
+export const countTokens = (inputText) => {
+  return inputText
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word).length;
+};
 
 function ChatView() {
   const { id } = useParams();
   const convex = useConvex();
   const { prompt, setPrompt } = usePrompt();
   const { authUser } = useAuth();
-  const bottomRef = useRef(null);
+  const scrollEndRef = useRef(null);
   const updateWorkspace = useMutation(api.workspaces.updateWorkspace);
+  const { toggleSidebar } = useSidebar();
+  const updateTokens = useMutation(api.users.updateTokens);
 
-   useEffect(() => {
-     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-   }, [prompt]);
-
+  useEffect(() => {
+    if (!scrollEndRef.current && !prompt.length) return;
+    setTimeout(() => {
+      if (scrollEndRef.current) {
+        scrollEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  }, [prompt]);
 
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -52,6 +66,15 @@ function ChatView() {
       const aiResponse = { role: "ai", content: response.data.result };
       setPrompt((prev) => [...prev, aiResponse]);
 
+      const tokens =
+        Number(authUser?.tokens) - countTokens(JSON.stringify(aiResponse));
+
+      //Update user tokens in db
+      await updateTokens({
+        id: authUser?._id,
+        tokens,
+      });
+      //Update workspace prompt in db
       await updateWorkspace({
         prompt: [...prompt, aiResponse],
         id,
@@ -110,8 +133,7 @@ function ChatView() {
               </div>
             </div>
           </div>
-        ))}{" "}
-        <div ref={bottomRef} />
+        ))}
         {loading && (
           <div
             className="p-3 rounded-lg mb-2 flex gap-2 items-start"
@@ -123,6 +145,7 @@ function ChatView() {
             <h2>Generating Response...</h2>
           </div>
         )}
+        {/* <div ref={scrollEndRef}></div> */}
       </div>
       {/* Input Section */}
       <div className="p-[1px] rounded-xl bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 mt-3 max-w-xl w-full">
@@ -150,6 +173,18 @@ function ChatView() {
             <Link className="h-5 w-5" />
           </div>
         </div>
+      </div>
+      <div className="flex gap-2 items-end">
+        {authUser && (
+          <Image
+            onClick={toggleSidebar}
+            src={authUser?.picture}
+            width={35}
+            height={35}
+            alt="userImage"
+            className="rounded-full my-2 cursor-pointer"
+          />
+        )}
       </div>
     </div>
   );

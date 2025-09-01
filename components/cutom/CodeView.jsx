@@ -15,15 +15,19 @@ import { useConvex, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Loader2Icon } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { countTokens } from "./ChatView";
 
 function CodeView() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("code");
   const [files, setFiles] = useState(Lookup?.DEFAULT_FILE);
+  const { authUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const fullHeight = { height: "75vh" };
   const { prompt } = usePrompt();
   const updateProjectFiles = useMutation(api.workspaces.updateProjectFiles);
+  const updateTokens = useMutation(api.users.updateTokens);
   const convex = useConvex();
 
   const getWorkSpaceData = async () => {
@@ -57,10 +61,20 @@ function CodeView() {
         id,
         files: response?.data?.files,
       });
+
+      const tokens =
+        Number(authUser?.tokens) - countTokens(JSON.stringify(response));
+
+      //Update user tokens in db
+      await updateTokens({
+        id: authUser?._id,
+        tokens,
+      });
     } catch (error) {
       console.error("❌ Error generating AI code:", error);
       throw new Error("Failed to generate AI code");
     } finally {
+      setActiveTab("code");
       setLoading(false);
     }
   };

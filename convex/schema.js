@@ -7,6 +7,7 @@ export default defineSchema({
     email: v.string(),
     picture: v.string(),
     uid: v.string(),
+    tokens: v.optional(v.number()),
   }),
   workspaces: defineTable({
     prompt: v.any(), // JSON Object
