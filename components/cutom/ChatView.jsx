@@ -10,7 +10,7 @@ import { useConvex, useMutation } from "convex/react";
 import { ArrowRight, Link, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Markdown from "react-markdown";
 
 function ChatView() {
@@ -18,31 +18,50 @@ function ChatView() {
   const convex = useConvex();
   const { prompt, setPrompt } = usePrompt();
   const { authUser } = useAuth();
+  const bottomRef = useRef(null);
   const updateWorkspace = useMutation(api.workspaces.updateWorkspace);
+
+   useEffect(() => {
+     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+   }, [prompt]);
+
 
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState(false);
 
   const getWorkSpaceData = async () => {
-    const workspace = await convex.query(api.workspaces.getWorkspace, {
-      id,
-    });
-    setPrompt(workspace?.prompt);
+    try {
+      const workspace = await convex.query(api.workspaces.getWorkspace, {
+        id,
+      });
+      setPrompt(workspace?.prompt);
+    } catch (error) {
+      console.error("❌ Error fetching workspace data:", error);
+      throw new Error("Failed to fetch workspace data");
+    }
   };
 
   const getAIResponse = async () => {
     setLoading(true);
-    const PROMPT = JSON.stringify(prompt) + Prompt.CHAT_PROMPT;
-    const response = await axios.post("/api/ai-chat", {
-      prompt: PROMPT,
-    });
-    const aiResponse = { role: "ai", content: response.data.result };
-    setPrompt((prev) => [...prev, aiResponse]);
-    await updateWorkspace({
-      prompt: [...prompt, aiResponse],
-      id,
-    });
-    setLoading(false);
+    try {
+      const PROMPT = JSON.stringify(prompt) + Prompt.CHAT_PROMPT;
+      const response = await axios.post("/api/ai-chat", {
+        prompt: PROMPT,
+      });
+
+      const aiResponse = { role: "ai", content: response.data.result };
+      setPrompt((prev) => [...prev, aiResponse]);
+
+      await updateWorkspace({
+        prompt: [...prompt, aiResponse],
+        id,
+      });
+    } catch (error) {
+      console.error("❌ Error generating AI response:", error);
+      throw new Error("Failed to generate AI response");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onGenerate = async (userInput) => {
@@ -58,6 +77,7 @@ function ChatView() {
       }
     }
   }, [prompt]);
+
   useEffect(() => {
     if (id) {
       getWorkSpaceData();
@@ -90,7 +110,8 @@ function ChatView() {
               </div>
             </div>
           </div>
-        ))}
+        ))}{" "}
+        <div ref={bottomRef} />
         {loading && (
           <div
             className="p-3 rounded-lg mb-2 flex gap-2 items-start"

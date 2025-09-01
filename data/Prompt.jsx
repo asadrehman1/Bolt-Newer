@@ -12,7 +12,12 @@ export default {
   CODE_GEN_PROMPT: dedent`
 Generate a Project in React. Create multiple components, organizing them in separate folders with filenames using the .js extension, if needed. The output should use Tailwind CSS for styling, 
 without any third-party dependencies or libraries, except for icons from the lucide-react library, which should only be used when necessary. Available icons include: Heart, Shield, Clock, Users, Play, Home, Search, Menu, User, Settings, Mail, Bell, Calendar, Star, Upload, Download, Trash, Edit, Plus, Minus, Check, X, and ArrowRight. For example, you can import an icon as import { Heart } from "lucide-react" and use it in JSX as <Heart className="" />.
-also you can use date-fns for date format and react-chartjs-2 chart, graph library
+also you can use date-fns for date format and react-chartjs-2 chart, graph library.
+
+Important: Always generate App.js and all component files at the project root. 
+Do not create or reference any files inside a /src folder. 
+All folders like /components, /utils, etc. must exist directly at the root. 
+The "generatedFiles" list must always reflect this root-level structure (e.g., /App.js, /components/SomeComponent.js, etc.).
 
 Return the response in JSON format with the following schema:
 {
@@ -24,7 +29,11 @@ Return the response in JSON format with the following schema:
     },
     ...
   },
-  "generatedFiles": []
+  "generatedFiles": [
+    "/App.js",
+    "/components/SomeComponent.js",
+    ...
+  ],
 }
 
 Here’s the reformatted and improved version of your prompt:

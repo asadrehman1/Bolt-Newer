@@ -40,3 +40,19 @@ export const updateWorkspace = mutation({
     });
   },
 });
+
+export const updateProjectFiles = mutation({
+  args: {
+    id: v.id("workspaces"),
+    files: v.any(),
+  },
+  handler: async (ctx, args) => {
+    const workspace = await ctx.db.get(args.id);
+    if (!workspace) {
+      throw new Error("Workspace not found");
+    }
+    return ctx.db.patch(args.id, {
+      fileData: args.files,
+    });
+  },
+});
