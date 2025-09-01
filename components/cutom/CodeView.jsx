@@ -22,7 +22,7 @@ function CodeView() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("code");
   const [files, setFiles] = useState(Lookup?.DEFAULT_FILE);
-  const { authUser } = useAuth();
+  const { authUser, setAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const fullHeight = { height: "75vh" };
   const { prompt } = usePrompt();
@@ -64,6 +64,11 @@ function CodeView() {
 
       const tokens =
         Number(authUser?.tokens) - countTokens(JSON.stringify(response));
+
+      setAuthUser(prev => ({
+        ...prev,
+        tokens: tokens,
+      }));
 
       //Update user tokens in db
       await updateTokens({

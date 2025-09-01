@@ -8,6 +8,7 @@ import SignInDialog from "./SignInDialog";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function Hero() {
   const { authUser } = useAuth();
@@ -20,6 +21,10 @@ function Hero() {
   const onGenerate = async (userInput) => {
     if (!authUser?.name) {
       setOpenDialog(true);
+      return;
+    }
+    if(authUser?.tokens < 10) {
+      toast('You dont have enough tokens to generate AI responses');
       return;
     }
     const prompt = {

@@ -7,6 +7,7 @@ import { ConvexClientProvider } from "./ConvexClientProvider";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/cutom/AppSidebar";
 import { PayPalScriptProviderWrapper } from "@/components/ClientProviders";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Bolt Newer",
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
                       {" "}
                       <SidebarTrigger className="cursor-pointer ml-10" />
                       {children}
+                      <Toaster />
                     </main>
                   </SidebarProvider>
                 </PromptContextProvider>

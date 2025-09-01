@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
 import Markdown from "react-markdown";
 import { useSidebar } from "../ui/sidebar";
+import { toast } from "sonner";
 
 export const countTokens = (inputText) => {
   return inputText
@@ -24,7 +25,7 @@ function ChatView() {
   const { id } = useParams();
   const convex = useConvex();
   const { prompt, setPrompt } = usePrompt();
-  const { authUser } = useAuth();
+  const { authUser, setAuthUser } = useAuth();
   const scrollEndRef = useRef(null);
   const updateWorkspace = useMutation(api.workspaces.updateWorkspace);
   const { toggleSidebar } = useSidebar();
@@ -73,6 +74,12 @@ function ChatView() {
         id: authUser?._id,
         tokens,
       });
+
+      setAuthUser((prev) => ({
+        ...prev,
+        tokens: tokens,
+      }));
+
       //Update workspace prompt in db
       await updateWorkspace({
         prompt: [...prompt, aiResponse],
@@ -87,6 +94,10 @@ function ChatView() {
   };
 
   const onGenerate = async (userInput) => {
+    if(authUser?.tokens < 10) {
+      toast('You dont have enough tokens to generate AI responses');
+      return;
+    }
     setPrompt((prev) => [...prev, { role: "user", content: userInput }]);
     setUserInput("");
   };
