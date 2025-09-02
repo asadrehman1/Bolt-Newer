@@ -4,10 +4,11 @@ import { PromptContextProvider } from "@/context/PromptContext";
 import { AuthContextProvider } from "@/context/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ConvexClientProvider } from "./ConvexClientProvider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/cutom/AppSidebar";
 import { PayPalScriptProviderWrapper } from "@/components/ClientProviders";
 import { Toaster } from "sonner";
+import { ActionContextProvider } from "@/context/ActionContext";
 
 export const metadata = {
   title: "Bolt Newer",
@@ -18,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className="overflow-hidden">
+      <body>
         <ConvexClientProvider>
           <GoogleOAuthProvider
             clientId={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID}
@@ -26,16 +27,17 @@ export default function RootLayout({ children }) {
             <PayPalScriptProviderWrapper>
               <AuthContextProvider>
                 <PromptContextProvider>
-                  <Header />
-                  <SidebarProvider defaultOpen={false}>
-                    <AppSidebar />
-                    <main className="flex-1">
-                      {" "}
-                      <SidebarTrigger className="cursor-pointer ml-10" />
-                      {children}
-                      <Toaster />
-                    </main>
-                  </SidebarProvider>
+                  <ActionContextProvider>
+                    <Header />
+                    <SidebarProvider defaultOpen={false}>
+                      <AppSidebar />
+                      <main className="flex-1">
+                        {" "}
+                        {children}
+                        <Toaster />
+                      </main>
+                    </SidebarProvider>
+                  </ActionContextProvider>
                 </PromptContextProvider>
               </AuthContextProvider>
             </PayPalScriptProviderWrapper>

@@ -7,7 +7,7 @@ import Lookup from "@/data/Lookup";
 import Prompt from "@/data/Prompt";
 import axios from "axios";
 import { useConvex, useMutation } from "convex/react";
-import { ArrowRight, Link, Loader2Icon } from "lucide-react";
+import { ArrowRight, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
@@ -51,7 +51,7 @@ function ChatView() {
       setPrompt(workspace?.prompt);
     } catch (error) {
       console.error("❌ Error fetching workspace data:", error);
-      throw new Error("Failed to fetch workspace data");
+      toast("Failed to fetch workspace data");
     }
   };
 
@@ -87,7 +87,7 @@ function ChatView() {
       });
     } catch (error) {
       console.error("❌ Error generating AI response:", error);
-      throw new Error("Failed to generate AI response");
+      toast("Failed to generate AI response. Try again.");
     } finally {
       setLoading(false);
     }
@@ -128,9 +128,9 @@ function ChatView() {
               backgroundColor: Colors.CHAT_BACKGROUND,
             }}
           >
-            {prompt.role === "user" && (
+            {prompt.role === "user" && authUser?.picture && (
               <Image
-                src={authUser?.picture}
+                src={authUser.picture}
                 width={35}
                 height={35}
                 alt="userImage"
@@ -179,20 +179,17 @@ function ChatView() {
               />
             )}
           </div>
-          <div>
-            <Link className="h-5 w-5" />
-          </div>
         </div>
       </div>
       <div className="flex gap-2 items-end">
-        {authUser && (
+        {authUser?.picture && (
           <Image
             onClick={toggleSidebar}
-            src={authUser?.picture}
+            src={authUser.picture}
             width={35}
             height={35}
             alt="userImage"
-            className="rounded-full my-2 cursor-pointer"
+            className="rounded-full my-2"
           />
         )}
       </div>

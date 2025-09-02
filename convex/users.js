@@ -47,13 +47,6 @@ export const updateTokens = mutation({
     tokens: v.number(),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("id"), args.id))
-      .first();
-    if (!user) {
-      throw new Error("User not found");
-    }
     return ctx.db.patch(args.id, {
       tokens: args.tokens,
     });

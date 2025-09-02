@@ -20,7 +20,7 @@ function WorkspaceHistory() {
   };
 
   useEffect(() => {
-    if (authUser) {
+    if (authUser?._id) {
       getAllWorkspaces();
     }
   }, [authUser]);

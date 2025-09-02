@@ -4,6 +4,7 @@ import { api } from "@/convex/_generated/api";
 import { useConvex } from "convex/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/cutom/LoadingSpinner";
+import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
 
@@ -11,12 +12,14 @@ const AuthContextProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState({});
   const [loading, setLoading] = useState(true);
   const convex = useConvex();
+  const router = useRouter();
   const isAuthenticated = async () => {
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("authUser");
       if (!storedUser) {
         setAuthUser(null);
         setLoading(false);
+        router.push("/");
         return;
       }
 

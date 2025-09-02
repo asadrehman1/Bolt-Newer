@@ -6,8 +6,16 @@ const PromptContext = createContext();
 
 const PromptContextProvider = ({ children }) => {
   const [prompt, setPrompt] = useState([]);
+  const [activeTab, setActiveTab] = useState("code");
   return (
-    <PromptContext.Provider value={{ prompt, setPrompt }}>
+    <PromptContext.Provider
+      value={{
+        prompt,
+        setPrompt,
+        activeTab,
+        setActiveTab,
+      }}
+    >
       {children}
     </PromptContext.Provider>
   );

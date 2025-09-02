@@ -1,16 +1,17 @@
 "use client";
-import { LogOut, Settings, Wallet } from "lucide-react";
+import { LogOut, Wallet } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { useSidebar } from "../ui/sidebar";
 
 function Footer() {
   const router = useRouter();
+  const { setAuthUser } = useAuth();
+    const { toggleSidebar } = useSidebar();
+
   const options = [
-    {
-      name: "Settings",
-      icon: Settings,
-    },
     {
       name: "My Subscription",
       icon: Wallet,
@@ -19,11 +20,21 @@ function Footer() {
     {
       name: "Sign Out",
       icon: LogOut,
+      action: "logout",
     },
   ];
+
   const onOptionClick = (option) => {
-    router.push(option.path);
+    if (option.action === "logout") {
+      localStorage.removeItem("authUser");
+      setAuthUser(null);
+      toggleSidebar();
+      router.push("/");
+    } else if (option.path) {
+      router.push(option.path);
+    }
   };
+
   return (
     <div className="px-2 mb-10">
       {options.map((option, index) => (
@@ -33,7 +44,7 @@ function Footer() {
           key={index}
           className="w-full flex justify-start cursor-pointer my-3"
         >
-          <option.icon />
+          <option.icon className="mr-2" />
           <p>{option.name}</p>
         </Button>
       ))}

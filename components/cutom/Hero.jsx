@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Lookup from "@/data/Lookup";
-import { ArrowRight, Link } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Colors from "@/data/Colors";
 import { useAuth } from "@/context/AuthContext";
 import SignInDialog from "./SignInDialog";
@@ -64,9 +64,6 @@ function Hero() {
                 className="bg-blue-500 p-2 h-8 w-8 rounded-md cursor-pointer"
               />
             )}
-          </div>
-          <div>
-            <Link className="h-5 w-5" />
           </div>
         </div>
       </div>

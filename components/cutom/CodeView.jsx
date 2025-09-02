@@ -5,7 +5,6 @@ import {
   SandpackLayout,
   SandpackCodeEditor,
   SandpackFileExplorer,
-  SandpackPreview,
 } from "@codesandbox/sandpack-react";
 import Lookup from "@/data/Lookup";
 import { usePrompt } from "@/context/PromptContext";
@@ -17,18 +16,21 @@ import { useParams } from "next/navigation";
 import { Loader2Icon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { countTokens } from "./ChatView";
+import SandpackPreviewClient from "./SandpackPreviewClient";
+import { useAction } from "@/context/ActionContext";
+import { toast } from "sonner";
 
 function CodeView() {
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState("code");
   const [files, setFiles] = useState(Lookup?.DEFAULT_FILE);
   const { authUser, setAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const fullHeight = { height: "75vh" };
-  const { prompt } = usePrompt();
+  const { prompt, activeTab, setActiveTab } = usePrompt();
   const updateProjectFiles = useMutation(api.workspaces.updateProjectFiles);
   const updateTokens = useMutation(api.users.updateTokens);
   const convex = useConvex();
+  const { action } = useAction();
 
   const getWorkSpaceData = async () => {
     setLoading(true);
@@ -40,7 +42,7 @@ function CodeView() {
       setFiles(mergedFiles);
     } catch (error) {
       console.error("❌ Error fetching workspace data:", error);
-      throw new Error("Failed to fetch workspace data");
+      toast("Failed to fetch workspace data");
     } finally {
       setLoading(false);
     }
@@ -59,13 +61,13 @@ function CodeView() {
 
       await updateProjectFiles({
         id,
-        files: response?.data?.files,
+        files: response?.data?.files || {},
       });
 
       const tokens =
         Number(authUser?.tokens) - countTokens(JSON.stringify(response));
 
-      setAuthUser(prev => ({
+      setAuthUser((prev) => ({
         ...prev,
         tokens: tokens,
       }));
@@ -77,7 +79,7 @@ function CodeView() {
       });
     } catch (error) {
       console.error("❌ Error generating AI code:", error);
-      throw new Error("Failed to generate AI code");
+      toast("Failed to generate AI code. Try again.");
     } finally {
       setActiveTab("code");
       setLoading(false);
@@ -98,6 +100,12 @@ function CodeView() {
       }
     }
   }, [prompt]);
+
+  useEffect(() => {
+    if(action) {
+      setActiveTab("preview");
+    }
+  }, [action]);
 
   return (
     <div className="relative">
@@ -141,7 +149,7 @@ function CodeView() {
             </>
           ) : (
             <>
-              <SandpackPreview style={fullHeight} showNavigator={true} />
+              <SandpackPreviewClient style={fullHeight} />
             </>
           )}
         </SandpackLayout>
