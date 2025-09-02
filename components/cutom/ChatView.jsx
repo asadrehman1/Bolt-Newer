@@ -56,6 +56,7 @@ function ChatView() {
   };
 
   const getAIResponse = async () => {
+    if (loading) return; // prevent duplicate calls
     setLoading(true);
     try {
       const PROMPT = JSON.stringify(prompt) + Prompt.CHAT_PROMPT;
@@ -64,23 +65,23 @@ function ChatView() {
       });
 
       const aiResponse = { role: "ai", content: response.data.result };
+
+      // Add AI response
       setPrompt((prev) => [...prev, aiResponse]);
 
+      // Token logic
       const tokens =
         Number(authUser?.tokens) - countTokens(JSON.stringify(aiResponse));
-
-      //Update user tokens in db
       await updateTokens({
         id: authUser?._id,
         tokens,
       });
-
       setAuthUser((prev) => ({
         ...prev,
-        tokens: tokens,
+        tokens,
       }));
 
-      //Update workspace prompt in db
+      // Update workspace
       await updateWorkspace({
         prompt: [...prompt, aiResponse],
         id,
@@ -93,6 +94,7 @@ function ChatView() {
     }
   };
 
+
   const onGenerate = async (userInput) => {
     if(authUser?.tokens < 10) {
       toast('You dont have enough tokens to generate AI responses');
@@ -104,8 +106,8 @@ function ChatView() {
 
   useEffect(() => {
     if (prompt.length > 0) {
-      const role = prompt[prompt.length - 1].role;
-      if (role === "user") {
+      const lastMessage = prompt[prompt.length - 1];
+      if (lastMessage.role === "user" && !loading) {
         getAIResponse();
       }
     }

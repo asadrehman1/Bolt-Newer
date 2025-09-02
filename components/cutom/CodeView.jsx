@@ -49,6 +49,7 @@ function CodeView() {
   };
 
   const generateAICode = async () => {
+    if (loading) return; // 🚀 prevent duplicate trigger
     setLoading(true);
     try {
       const PROMPT = JSON.stringify(prompt) + " " + Prompt.CODE_GEN_PROMPT;
@@ -69,10 +70,9 @@ function CodeView() {
 
       setAuthUser((prev) => ({
         ...prev,
-        tokens: tokens,
+        tokens,
       }));
 
-      //Update user tokens in db
       await updateTokens({
         id: authUser?._id,
         tokens,
@@ -86,6 +86,7 @@ function CodeView() {
     }
   };
 
+
   useEffect(() => {
     if (id) {
       getWorkSpaceData();
@@ -94,12 +95,13 @@ function CodeView() {
 
   useEffect(() => {
     if (prompt.length > 0) {
-      const role = prompt[prompt.length - 1].role;
-      if (role === "user") {
+      const lastMessage = prompt[prompt.length - 1];
+      if (lastMessage.role === "user" && !loading) {
         generateAICode();
       }
     }
   }, [prompt]);
+
 
   useEffect(() => {
     if(action) {
