@@ -1,4 +1,5 @@
 "use client";
+
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -12,23 +13,32 @@ export const useGoogleAuth = (onClose = () => {}) => {
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const userInfo = await axios.get(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        { headers: { Authorization: "Bearer "+tokenResponse?.access_token } }
-      );
-      const user = userInfo?.data;
-      const convexUser = await createUser({
-        name: userInfo.data.name,
-        email: userInfo.data.email,
-        picture: userInfo.data.picture,
-        uid: uuid4(),
-      });
+      try {
+        // Get Google profile
+        const { data: user } = await axios.get(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: { Authorization: "Bearer " + tokenResponse?.access_token },
+          }
+        );
 
-      localStorage.setItem("authUser", JSON.stringify(convexUser));
-      setAuthUser(convexUser);
-      onClose?.();
+        // Create or get user in Convex
+        const convexUser = await createUser({
+          name: user.name,
+          email: user.email,
+          picture: user.picture,
+          uid: uuid4(),
+        });
+        localStorage.setItem("authUser", JSON.stringify(convexUser));
+        setAuthUser(convexUser);
+
+        onClose?.();
+      } catch (error) {
+        console.error("Google login failed:", error);
+      }
     },
-    onError: (errorResponse) => console.log(errorResponse),
+    onError: (errorResponse) =>
+      console.error("Google OAuth error:", errorResponse),
   });
 
   return { googleLogin };
