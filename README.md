@@ -87,3 +87,7 @@ npm run dev
 **Asad Rehman** — [GitHub](https://github.com/asadrehman1)
 
 ---
+
+## ⚡ License
+
+MIT © 2025 Asad Rehman
