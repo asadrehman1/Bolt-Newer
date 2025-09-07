@@ -40,9 +40,13 @@ function Hero() {
   };
 
   return (
-    <div className="flex flex-col items-center mt-36 xl:mt-52 gap-2 sm:px-4">
-      <h2 className="font-bold text-4xl">{Lookup.HERO_HEADING}</h2>
-      <p className="text-gray-400 font-medium">{Lookup.HERO_DESC}</p>
+    <div className="flex flex-col items-center mt-36 xl:mt-52 px-4 sm:px-4 gap-2">
+      <h2 className="font-bold text-3xl sm:text-5xl text-center">
+        {Lookup.HERO_HEADING}
+      </h2>
+      <p className="text-gray-400 font-medium text-center text-sm sm:text-base">
+        {Lookup.HERO_DESC}
+      </p>
 
       <div className="p-[1px] rounded-xl bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 mt-3 max-w-xl w-full">
         <div

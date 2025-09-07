@@ -23,7 +23,13 @@ function Header() {
   };
   return (
     <div className="px-8 flex justify-between items-center">
-      <Image src={"/logo.avif"} width={100} height={100} alt="Bolt Logo" />
+      <Image
+        src="/logo.avif"
+        alt="Bolt Logo"
+        width={100}
+        height={100}
+        className="w-16 h-16 sm:w-24 sm:h-24"
+      />
       {!authUser?.name ? (
         <div className="flex gap-3">
           <Button
