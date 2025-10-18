@@ -3,6 +3,10 @@
 **AI-Powered Website Generator SaaS built with Next.js**  
 Bolt.Newer is a clone of bolt.new that enables users to generate websites directly from prompts. It features **Google OAuth**, **PayPal subscriptions with token allocation**, **AI-driven site creation**, and a **chat history sidebar**. Includes live code editing and preview using **Sandpack**. Users can export their apps to Sandpack and download the code.
 
+![Bolt Newer Preview Code](./public/bolt-newer-preview.png)
+
+![Bolt Newer Preview UI](./public/bolt-newer-preview-2.png)
+
 ---
 
 ## 🚀 Features
