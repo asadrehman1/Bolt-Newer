@@ -38,42 +38,6 @@ Bolt.Newer is a clone of bolt.new that enables users to generate websites direct
 
 ---
 
-## 📦 Environment Variables
-
-Create a `.env` file in the root directory and add the following (replace with your own credentials):
-
-```env
-# Google OAuth
-NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
-
-# Convex deployment (optional for future backend)
-CONVEX_DEPLOYMENT=dev:YOUR_CONVEX_DEPLOYMENT
-NEXT_PUBLIC_CONVEX_URL=https://YOUR_CONVEX_SUBDOMAIN.convex.cloud
-
-# AI API (Future)
-GOOGLE_AI_API_KEY=YOUR_GOOGLE_AI_API_KEY
-
-# PayPal
-NEXT_PUBLIC_PAYPAL_CLIENT_ID=YOUR_PAYPAL_CLIENT_ID
-```
-
-## 💻 Setup & Run Locally
-
-```bash
-# Clone the repository
-git clone https://github.com/asadrehman1/Bolt.Newer.git
-cd bolt.newer
-
-# Install dependencies
-npm install
-
-# Start development server
-npx convex dev  # optional backend
-npm run dev
-```
-
----
-
 ## 📈 How It Works
 
 1. **_Sign In with Google_**: Authenticate securely via Google OAuth.
